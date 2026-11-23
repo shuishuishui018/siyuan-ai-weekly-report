@@ -1,0 +1,19 @@
+{
+  "name": "siyuan-ai-weekly-report",
+  "version": "1.0.0",
+  "description": "SiYuan plugin: collect notes in a date range and let AI generate a structured weekly report",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && node scripts/make-package.mjs",
+    "typecheck": "tsc --noEmit",
+    "verify": "tsc --noEmit && vite build"
+  },
+  "devDependencies": {
+    "jszip": "^3.10.1",
+    "siyuan": "^1.2.9",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}

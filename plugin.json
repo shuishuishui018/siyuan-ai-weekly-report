@@ -1,0 +1,42 @@
+{
+  "name": "siyuan-ai-weekly-report",
+  "author": "shuishuishui018",
+  "url": "https://github.com/shuishuishui018/siyuan-ai-weekly-report",
+  "version": "1.0.1",
+  "minAppVersion": "3.1.0",
+  "backends": [
+    "all"
+  ],
+  "frontends": [
+    "desktop",
+    "desktop-window",
+    "browser-desktop"
+  ],
+  "disabledInPublish": true,
+  "displayName": {
+    "default": "AI Weekly Report",
+    "zh-CN": "AI 周报生成器",
+    "zh-TW": "AI 週報產生器"
+  },
+  "description": {
+    "default": "Collect notes in a date range and let AI turn scattered work logs into a structured weekly report document.",
+    "zh-CN": "自动收集指定时间范围内的笔记，用 AI 把零散的工作日志汇总成结构化的周报文档。",
+    "zh-TW": "自動收集指定時間範圍內的筆記，用 AI 把零散的工作日誌匯總成結構化的週報文件。"
+  },
+  "readme": {
+    "default": "README.md",
+    "zh-CN": "README_zh_CN.md"
+  },
+  "icon": "icon.png",
+  "preview": "preview.png",
+  "keywords": [
+    "weekly report",
+    "周报",
+    "周報",
+    "AI",
+    "summary",
+    "总结",
+    "work log",
+    "工作日志"
+  ]
+}
