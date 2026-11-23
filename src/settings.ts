@@ -1,4 +1,4 @@
-import { Dialog, showMessage } from "siyuan";
+import { Dialog, getFrontend, showMessage } from "siyuan";
 import { listNotebooks, type Notebook } from "./api";
 import { t } from "./i18n";
 import {
@@ -260,11 +260,15 @@ export async function openSettingsDialog(
     notebooks = [];
   }
 
+  // 手机屏宽通常 360~430px，写死 760px 会横向溢出、底部按钮点不到
+  const frontend = getFrontend();
+  const isMobile = frontend === "mobile" || frontend === "browser-mobile";
+
   const dialog = new Dialog({
     title: t("settingsTitle"),
     content: buildContent(current, notebooks),
-    width: "760px",
-    height: "82vh",
+    width: isMobile ? "100%" : "760px",
+    height: isMobile ? "100%" : "82vh",
     destroyCallback: () => {},
   });
 

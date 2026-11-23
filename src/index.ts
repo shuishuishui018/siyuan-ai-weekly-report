@@ -1,4 +1,4 @@
-import { openTab, Plugin, showMessage } from "siyuan";
+import { getFrontend, openMobileFileById, openTab, Plugin, showMessage } from "siyuan";
 import { t } from "./i18n";
 import { generateWeeklyReport } from "./report";
 import { openSettingsDialog } from "./settings";
@@ -55,6 +55,16 @@ export default class AIWeeklyReport extends Plugin {
     showMessage(text, timeout, type, MESSAGE_ID);
   }
 
+  /** 移动端没有多标签，必须走 openMobileFileById，否则不会跳转 */
+  private openDoc(docId: string) {
+    const frontend = getFrontend();
+    if (frontend === "mobile" || frontend === "browser-mobile") {
+      openMobileFileById(this.app, docId);
+      return;
+    }
+    openTab({ app: this.app, doc: { id: docId, zoomIn: false } });
+  }
+
   async openSettings() {
     await openSettingsDialog(this.settings, async (next) => {
       this.settings = next;
@@ -81,7 +91,7 @@ export default class AIWeeklyReport extends Plugin {
       this.notify(t("msgDone", { title: result.title, count: result.docCount }), 6000);
       if (this.settings.output.openAfterCreate && result.docId) {
         try {
-          openTab({ app: this.app, doc: { id: result.docId, zoomIn: false } });
+          this.openDoc(result.docId);
         } catch {
           // 打开失败不影响已生成的文档
         }

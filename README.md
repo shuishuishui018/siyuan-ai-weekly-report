@@ -6,6 +6,10 @@ The plugin reads the notes you wrote during a period, sends them to an OpenAI-co
 
 > 中文说明见 [README_zh_CN.md](./README_zh_CN.md)
 
+## Platforms
+
+Works on desktop (Windows / macOS / Linux), in the browser, and on mobile (Android / iOS). On phones the settings panel collapses to a single column and the generated document opens right away.
+
 ## Features
 
 - **Automatic collection** — picks up documents by their last update time, filtered by notebook and path (e.g. `/工作日志`, `/每日待办`).

@@ -1,6 +1,6 @@
 {
   "name": "siyuan-ai-weekly-report",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "SiYuan plugin: collect notes in a date range and let AI generate a structured weekly report",
   "license": "MIT",
   "main": "index.js",
