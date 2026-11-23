@@ -1,4 +1,4 @@
-import type { RangeMode } from "./types";
+import { DEFAULT_TITLE_TEMPLATE, type RangeMode } from "./types";
 
 export interface DateRange {
   start: Date;
@@ -41,6 +41,17 @@ function mondayOf(date: Date): Date {
 
 export function formatCn(date: Date): string {
   return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+}
+
+/** 结束日相对开始日化简：同年同月 → D日；同年不同月 → M月D日；跨年 → YYYY年M月D日 */
+export function formatCnEnd(start: Date, end: Date): string {
+  if (start.getFullYear() !== end.getFullYear()) {
+    return formatCn(end);
+  }
+  if (start.getMonth() !== end.getMonth()) {
+    return `${end.getMonth() + 1}月${end.getDate()}日`;
+  }
+  return `${end.getDate()}日`;
 }
 
 /** 转为思源 SQL 中 updated/created 字段使用的 YYYYMMDDHHMMSS 文本 */
@@ -112,12 +123,14 @@ export function resolveRange(
 
 export function formatTitle(template: string, range: DateRange): string {
   const pad = (n: number) => String(n).padStart(2, "0");
-  const title = (template || "{{YYYY}}-W{{WW}} 工作周报")
+  const title = (template || DEFAULT_TITLE_TEMPLATE)
     .replace(/\{\{YYYY\}\}/g, String(range.isoYear))
     .replace(/\{\{WW\}\}/g, pad(range.isoWeek))
     .replace(/\{\{W\}\}/g, String(range.isoWeek))
     .replace(/\{\{start\}\}/g, toSiyuanDate(range.start))
-    .replace(/\{\{end\}\}/g, toSiyuanDate(range.end));
+    .replace(/\{\{end\}\}/g, toSiyuanDate(range.end))
+    .replace(/\{\{startCn\}\}/g, formatCn(range.start))
+    .replace(/\{\{endCn\}\}/g, formatCnEnd(range.start, range.end));
   return sanitizeFileName(title.trim()) || "工作周报";
 }
 

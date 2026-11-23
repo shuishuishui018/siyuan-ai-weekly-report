@@ -3,9 +3,11 @@ import { listNotebooks, type Notebook } from "./api";
 import { t } from "./i18n";
 import {
   DEFAULT_SYSTEM_PROMPT,
+  DEFAULT_TITLE_TEMPLATE,
   DEFAULT_USER_TEMPLATE,
   type PluginSettings,
   type RangeMode,
+  type RepeatStrategy,
 } from "./types";
 
 function esc(value: unknown): string {
@@ -33,6 +35,11 @@ function section(title: string, desc: string, body: string): string {
 }
 
 const MODES: RangeMode[] = ["thisWeek", "lastWeek", "lastNDays", "custom"];
+const REPEAT_MODES: RepeatStrategy[] = ["skip", "suffix"];
+
+function repeatLabel(mode: RepeatStrategy): string {
+  return mode === "suffix" ? t("existsSuffix") : t("existsSkip");
+}
 
 function modeLabel(mode: RangeMode): string {
   switch (mode) {
@@ -73,6 +80,11 @@ function buildContent(settings: PluginSettings, notebooks: Notebook[]): string {
 
   const modeOptions = MODES.map(
     (m) => `<option value="${m}" ${settings.range.mode === m ? "selected" : ""}>${esc(modeLabel(m))}</option>`,
+  ).join("");
+
+  const existingOptions = REPEAT_MODES.map(
+    (m) =>
+      `<option value="${m}" ${settings.output.existing === m ? "selected" : ""}>${esc(repeatLabel(m))}</option>`,
   ).join("");
 
   return `<div class="b3-dialog__content air-settings">
@@ -196,6 +208,11 @@ function buildContent(settings: PluginSettings, notebooks: Notebook[]): string {
             settings.output.titleTemplate,
           )}">`,
         ) +
+        field(
+          t("labExists"),
+          t("labExistsDesc"),
+          `<select class="b3-select fn__block" id="air-existing">${existingOptions}</select>`,
+        ) +
         `<div class="air-checks">
           <label class="air-check"><input type="checkbox" id="air-open" ${
             settings.output.openAfterCreate ? "checked" : ""
@@ -225,6 +242,16 @@ function buildContent(settings: PluginSettings, notebooks: Notebook[]): string {
         `<button class="b3-button b3-button--outline air-reset-prompt" data-role="reset-prompt">${
           isZhLike() ? "恢复默认提示词" : "Reset prompts"
         }</button>`,
+    )}
+    ${section(
+      t("sectionAbout"),
+      "",
+      `<div class="air-about">
+        <p class="air-about__text">${esc(t("aboutText"))}</p>
+        <img src="/plugins/siyuan-ai-weekly-report/assets/donation-qr.png" class="air-qr" alt="${esc(
+          t("aboutQrAlt"),
+        )}">
+      </div>`,
     )}
   </div>
   <div class="air-footer">
@@ -324,7 +351,8 @@ export async function openSettingsDialog(
       output: {
         notebook: value("#air-out-notebook"),
         folder: value("#air-folder") || "/AI周报",
-        titleTemplate: value("#air-title") || "{{YYYY}}-W{{WW}} 工作周报",
+        titleTemplate: value("#air-title") || DEFAULT_TITLE_TEMPLATE,
+        existing: value("#air-existing") === "suffix" ? "suffix" : "skip",
         openAfterCreate: pick<HTMLInputElement>("#air-open")?.checked ?? true,
         writeProvenance: pick<HTMLInputElement>("#air-provenance")?.checked ?? true,
       },

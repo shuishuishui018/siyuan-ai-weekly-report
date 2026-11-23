@@ -1,4 +1,4 @@
-// 组装思源市场要求的 package.zip：i18n / index.js / index.css / plugin.json / README / icon / preview
+// 组装思源市场要求的 package.zip：i18n / assets / index.js / index.css / plugin.json / README / icon / preview
 import JSZip from "jszip";
 import { readFile, writeFile, mkdir, rm, readdir, copyFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -35,6 +35,15 @@ async function main() {
       if (name.endsWith(".json")) {
         await copyFile(join(i18nDir, name), join(stage, "i18n", name));
       }
+    }
+  }
+
+  // 设置面板里的打赏二维码：思源把 data/plugins 挂载在 /plugins/ 下
+  const assetDir = join(root, "assets");
+  if (existsSync(assetDir)) {
+    await mkdir(join(stage, "assets"), { recursive: true });
+    for (const name of await readdir(assetDir)) {
+      await copyFile(join(assetDir, name), join(stage, "assets", name));
     }
   }
 

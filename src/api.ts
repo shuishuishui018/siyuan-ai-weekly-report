@@ -32,6 +32,18 @@ export async function sql(stmt: string): Promise<Record<string, string>[]> {
   return Array.isArray(data) ? data : [];
 }
 
+function escSql(value: string): string {
+  return value.replace(/'/g, "''");
+}
+
+/** 目标路径（hpath，带前导 /）下是否已有文档，用于判断同一周是否重复生成 */
+export async function docExistsByPath(path: string): Promise<boolean> {
+  const rows = await sql(
+    `SELECT id FROM blocks WHERE type = 'd' AND hpath = '${escSql(path)}' LIMIT 1`,
+  );
+  return rows.length > 0;
+}
+
 export async function exportDocMarkdown(id: string): Promise<{ hPath: string; content: string }> {
   const data = await kernelPost<{ hPath: string; content: string }>("api/export/exportMdContent", { id });
   return { hPath: data?.hPath ?? "", content: data?.content ?? "" };

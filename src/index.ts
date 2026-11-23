@@ -88,6 +88,10 @@ export default class AIWeeklyReport extends Plugin {
       const result = await generateWeeklyReport(this.settings, (text) => {
         this.notify(text, 120000);
       });
+      if (result.skipped) {
+        this.notify(t("msgSkipped", { path: result.path }), 8000);
+        return;
+      }
       this.notify(t("msgDone", { title: result.title, count: result.docCount }), 6000);
       if (this.settings.output.openAfterCreate && result.docId) {
         try {

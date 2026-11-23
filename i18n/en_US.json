@@ -11,6 +11,7 @@
   "sectionRangeDesc": "Documents are filtered by their last update time.",
   "sectionOutput": "Output",
   "sectionOutputDesc": "Where the report document is created.",
+  "sectionAbout": "About / Support",
   "sectionPrompt": "Prompt",
   "sectionPromptDesc": "Customize the summary rules and structure. Supports {{range}}, {{docCount}}, {{materials}}, {{tasks}}.",
   "labBaseUrl": "API base URL",
@@ -46,7 +47,11 @@
   "labFolder": "Target folder",
   "labFolderDesc": "e.g. /Weekly, created automatically.",
   "labTitle": "Title template",
-  "labTitleDesc": "Supports {{YYYY}}, {{WW}}, {{start}}, {{end}}.",
+  "labTitleDesc": "Supports {{YYYY}}, {{WW}} (two-digit week), {{W}}, {{start}}, {{end}} (YYYY-MM-DD), {{startCn}} and {{endCn}} (Chinese dates; the end date is shortened to “D日” within the same month and to “M月D日” within the same year).",
+  "labExists": "When this week's report already exists",
+  "labExistsDesc": "Skip: no AI call and no new or modified document. Append number: create a separate “Title 2”, “Title 3” and so on.",
+  "existsSkip": "Skip (recommended)",
+  "existsSuffix": "Create with a number suffix",
   "labOpen": "Open the document after generating",
   "labProvenance": "Append source information at the end",
   "labSystem": "System prompt",
@@ -62,5 +67,8 @@
   "msgDone": "Generated “{title}” from {count} documents",
   "msgFailed": "Failed: {error}",
   "msgNoMaterial": "No documents found in {range}. Check the source scope or the date range.",
-  "msgRunning": "Generating, please wait…"
+  "msgRunning": "Generating, please wait…",
+  "msgSkipped": "This week's report already exists, skipped: {path}",
+  "aboutText": "If this plugin saves you the weekly report writing time, you are welcome to buy me a coffee.",
+  "aboutQrAlt": "Donation QR code"
 }

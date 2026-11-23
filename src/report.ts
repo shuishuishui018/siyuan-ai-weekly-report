@@ -1,8 +1,8 @@
-import { chat, createDoc, listNotebooks } from "./api";
+import { chat, createDoc, docExistsByPath, listNotebooks } from "./api";
 import { collectDocs, extractOpenTasks } from "./collector";
 import { buildMessages, cleanModelOutput } from "./prompt";
 import { formatTitle, resolveRange, toSiyuanDate } from "./week";
-import type { PluginSettings } from "./types";
+import type { PluginSettings, RepeatStrategy } from "./types";
 
 export interface GenerateResult {
   docId: string;
@@ -10,11 +10,38 @@ export interface GenerateResult {
   docCount: number;
   notebookName: string;
   charCount: number;
+  /** true 表示本周周报已存在且策略为 skip，未调用 AI、未建文档 */
+  skipped: boolean;
+  /** 目标文档路径（skip 时为命中的已有文档路径） */
+  path: string;
 }
+
+/** 同名文档最多顺延到这个序号，避免死循环 */
+const SAME_TITLE_LIMIT = 50;
 
 function joinDocPath(folder: string, title: string): string {
   const clean = (folder || "/AI周报").trim().replace(/^\/+|\/+$/g, "");
   return clean ? `/${clean}/${title}` : `/${title}`;
+}
+
+/** skip 命中已有文档时返回 skipped，suffix 时返回第一个可用的「标题 N」路径 */
+export async function resolveTargetPath(
+  basePath: string,
+  strategy: RepeatStrategy,
+): Promise<{ path: string; skipped: boolean }> {
+  if (!(await docExistsByPath(basePath))) {
+    return { path: basePath, skipped: false };
+  }
+  if (strategy === "skip") {
+    return { path: basePath, skipped: true };
+  }
+  for (let i = 2; i <= SAME_TITLE_LIMIT; i += 1) {
+    const candidate = `${basePath} ${i}`;
+    if (!(await docExistsByPath(candidate))) {
+      return { path: candidate, skipped: false };
+    }
+  }
+  throw new Error(`同名周报已超过 ${SAME_TITLE_LIMIT} 份（${basePath}），请先清理旧文档。`);
 }
 
 export async function generateWeeklyReport(
@@ -27,7 +54,21 @@ export async function generateWeeklyReport(
     settings.range.customStart,
     settings.range.customEnd,
   );
-  const title = formatTitle(settings.output.titleTemplate, range);
+  const basePath = joinDocPath(settings.output.folder, formatTitle(settings.output.titleTemplate, range));
+  // 重复判定必须在调用 AI 之前完成：跳过时既不消耗模型额度也不建文档
+  const target = await resolveTargetPath(basePath, settings.output.existing);
+  const title = target.path.slice(target.path.lastIndexOf("/") + 1);
+  if (target.skipped) {
+    return {
+      docId: "",
+      title,
+      docCount: 0,
+      notebookName: "",
+      charCount: 0,
+      skipped: true,
+      path: target.path,
+    };
+  }
 
   onProgress(`正在收集 ${range.label} 的素材…`);
   const collected = await collectDocs(settings, range);
@@ -62,8 +103,7 @@ export async function generateWeeklyReport(
   }
 
   onProgress("正在写入周报文档…");
-  const path = joinDocPath(settings.output.folder, title);
-  const docId = await createDoc(notebook, path, markdown);
+  const docId = await createDoc(notebook, target.path, markdown);
   if (!docId) {
     throw new Error("周报文档创建失败，请查看思源内核日志。");
   }
@@ -76,5 +116,7 @@ export async function generateWeeklyReport(
     docCount: collected.docs.length,
     notebookName,
     charCount: body.length,
+    skipped: false,
+    path: target.path,
   };
 }

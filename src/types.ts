@@ -24,10 +24,14 @@ export interface RangeSettings {
   customEnd: string;
 }
 
+/** 同一周重复生成时的处理策略：skip 跳过、suffix 在标题后追加序号 */
+export type RepeatStrategy = "skip" | "suffix";
+
 export interface OutputSettings {
   notebook: string;
   folder: string;
   titleTemplate: string;
+  existing: RepeatStrategy;
   openAfterCreate: boolean;
   writeProvenance: boolean;
 }
@@ -71,6 +75,11 @@ export const DEFAULT_USER_TEMPLATE = `周报周期：{{range}}
 
 请按系统要求生成周报正文（Markdown）。`;
 
+export const DEFAULT_TITLE_TEMPLATE = "工作周报 {{YYYY}}-W{{WW}}（{{startCn}}-{{endCn}}）";
+
+/** 1.0.2 及更早版本的默认标题模板，仅用于升级判断 */
+const LEGACY_TITLE_TEMPLATE = "{{YYYY}}-W{{WW}} 工作周报";
+
 export const DEFAULT_SETTINGS: PluginSettings = {
   ai: {
     apiBaseUrl: "https://api.deepseek.com/v1",
@@ -96,7 +105,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   output: {
     notebook: "",
     folder: "/AI周报",
-    titleTemplate: "{{YYYY}}-W{{WW}} 工作周报",
+    titleTemplate: DEFAULT_TITLE_TEMPLATE,
+    existing: "skip",
     openAfterCreate: true,
     writeProvenance: true,
   },
@@ -117,6 +127,13 @@ export function mergeSettings(saved: unknown): PluginSettings {
     if (s[section] && typeof s[section] === "object") {
       Object.assign(base[section] as unknown as Record<string, unknown>, s[section]);
     }
+  }
+  // 旧版本原样保存的默认标题模板升级为新格式，用户自定义过的不动
+  if (base.output.titleTemplate === LEGACY_TITLE_TEMPLATE) {
+    base.output.titleTemplate = DEFAULT_TITLE_TEMPLATE;
+  }
+  if (base.output.existing !== "suffix") {
+    base.output.existing = "skip";
   }
   return base;
 }

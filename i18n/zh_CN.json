@@ -11,6 +11,7 @@
   "sectionRangeDesc": "周报统计的时间区间，按素材的最后更新时间筛选。",
   "sectionOutput": "输出",
   "sectionOutputDesc": "周报文档的保存位置与标题。",
+  "sectionAbout": "关于 / 支持",
   "sectionPrompt": "提示词",
   "sectionPromptDesc": "可自定义汇总规则与输出结构，支持 {{range}}、{{docCount}}、{{materials}}、{{tasks}} 占位符。",
   "labBaseUrl": "API 地址",
@@ -46,7 +47,11 @@
   "labFolder": "保存目录",
   "labFolderDesc": "例如 /AI周报，不存在会自动创建。",
   "labTitle": "标题模板",
-  "labTitleDesc": "支持 {{YYYY}}、{{WW}}（两位周序号）、{{start}}、{{end}}。",
+  "labTitleDesc": "支持 {{YYYY}}、{{WW}}（两位周序号）、{{W}}（周序号）、{{start}}、{{end}}（YYYY-MM-DD）、{{startCn}}、{{endCn}}（中文日期，结束日与开始日同年同月时写作「D日」，同年不同月写作「M月D日」）。",
+  "labExists": "本周已有同名周报时",
+  "labExistsDesc": "跳过：不调用 AI、不新建或修改文档；追加序号：另外生成「标题 2」「标题 3」等新文档。",
+  "existsSkip": "跳过（推荐）",
+  "existsSuffix": "新建并追加序号",
   "labOpen": "生成后打开文档",
   "labProvenance": "在文末标注素材来源信息",
   "labSystem": "系统提示词",
@@ -62,5 +67,8 @@
   "msgDone": "已生成《{title}》（汇总 {count} 篇素材）",
   "msgFailed": "生成失败：{error}",
   "msgNoMaterial": "在 {range} 内没有找到可用素材，请检查素材范围或时间区间。",
-  "msgRunning": "正在生成周报，请稍候…"
+  "msgRunning": "正在生成周报，请稍候…",
+  "msgSkipped": "本周周报已存在，已跳过：{path}",
+  "aboutText": "如果这个插件帮你省下了每周整理周报的时间，欢迎请我喝一杯咖啡。",
+  "aboutQrAlt": "打赏二维码"
 }

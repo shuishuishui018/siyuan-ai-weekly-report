@@ -74,6 +74,12 @@ node scripts/run-smoke.mjs   # end-to-end smoke test against a running kernel
 
 To debug with a live SiYuan instance, place the built `index.js`, `plugin.json`, `index.css` and `i18n/` in `{workspace}/data/plugins/siyuan-ai-weekly-report/`.
 
+## Donate
+
+If this plugin saves you the weekly report writing time, you are welcome to buy me a coffee.
+
+![Donation QR code](https://raw.githubusercontent.com/shuishuishui018/siyuan-ai-weekly-report/main/assets/donation-qr.png)
+
 ## License
 
 MIT

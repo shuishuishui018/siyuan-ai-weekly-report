@@ -72,6 +72,12 @@ node scripts/run-smoke.mjs   # 端到端冒烟测试（需要思源正在运行�
 
 需要在真实思源中调试时，把构建出的 `index.js`、`plugin.json`、`index.css`、`i18n/` 放到 `{工作空间}/data/plugins/siyuan-ai-weekly-report/`。
 
+## 打赏
+
+如果这个插件帮你省下了每周整理周报的时间，欢迎请我喝一杯咖啡，金额随意。
+
+![打赏二维码](https://raw.githubusercontent.com/shuishuishui018/siyuan-ai-weekly-report/main/assets/donation-qr.png)
+
 ## 许可
 
 MIT
